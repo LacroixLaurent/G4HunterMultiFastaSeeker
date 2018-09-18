@@ -105,6 +105,11 @@ server = (function(input, output) {
 					res <- as.data.frame(hunted)
 					colnames(res)[8] <- 'threshold'
 					colnames(res)[9] <- 'window'
+					nono <- make.names(res[,1],unique=T)
+					keep <- grep('.',nono,fixed=T)
+					nono[-keep] <- paste0(nono[-keep],'.0')
+					res <- cbind(nono,res)
+					colnames(res)[1] <- 'hitnames'
 				}
 				else
 				{res <- NULL}
@@ -118,12 +123,12 @@ server = (function(input, output) {
 	output$seqcheck <- renderText(checkInput())
 	output$seqchecklen <- renderText(checkInLength())
 
-	output$result <- renderTable(dataProcessed())
+	output$result <- renderTable(dataProcessed(),rownames=F)
 	output$Inputlength <- renderText(length(dataInput()[[1]]))
 	output$hits <- renderText(length(dataProcessed()[,1]))
 
 	output$downloadData <- downloadHandler(
-		filename = function() {paste0(strsplit(basename(as.character(input$file1)),split='.',fixed=T)[[1]][1],'_hl=',input$hl,'_k=',input$k,'_G4Hseeked_',Sys.Date(),'.txt')},
+		filename = function() {paste0(strsplit(basename(as.character(input$file1)),split='.',fixed=T)[[1]][1],'_thr=',input$hl,'_k=',input$k,'_G4Hseeked_',Sys.Date(),'.txt')},
 		content = function(file) {
 			write.table(dataProcessed(), file,sep='\t',col.names=T,row.names=F)
 		})
