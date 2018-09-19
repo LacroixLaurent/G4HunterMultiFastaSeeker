@@ -31,13 +31,9 @@ ui <- fluidPage(
 
 						wellPanel(fluidRow(
 							column(4,
-										 fileInput('file1', label= h4('Choose a FASTA File'))
-							)
-						),
-						em('Choose a multiFasta file with your DNA sequences. Up to 5Mb is OK.'),style="background-color:pink;"),
+										 fileInput('file1', label= h4('Choose a (multi)FASTA File'))
+							),
 
-						h3('Results'),
-						fluidRow(
 							column(3,
 										 checkboxInput('withseq', 'Report sequences', T)
 							),
@@ -45,16 +41,16 @@ ui <- fluidPage(
 										 checkboxInput('Gseq', 'Report G-sequences', F)
 							)
 						),
-						fluidRow(
-							column(3,
-										 h5('Number of hits'),
-										 textOutput('hits')
-							),
-							column(3,
-										 h5('Number of Input Sequence'),
-										 textOutput('Inputlength')
-							)
-						),
+						em('Choose a multiFasta file with your DNA sequences. Up to 5Mb is OK. '),
+						br(),
+						em('Beware that computation can become slow if the number of entries in the multifasta file is big (>1000).'),
+						h5(textOutput('Inputlength')),
+						strong(textOutput('seqchecklen'),style="color: red"),
+						actionButton('go','Please click here to start the computation'),
+						style="background-color:pink;"),
+
+						h3('Results'),
+						h5(textOutput('hits')),
 
 						downloadButton('downloadData', 'Download Results'),
 						tableOutput('result')
@@ -70,19 +66,6 @@ server = (function(input, output) {
 	output$text1 <- renderText({QuickScore()})
 
 	# Seeker part
-	## Checking input text
-	checkInLength <- reactive({
-		checlen <- NULL
-		if (nchar(input$seq)<as.numeric(input$k) & input$intype=='man') {checlen <- 'Input sequence shorter than the window size'}
-		return(checlen)
-	})
-
-	checkInput <- reactive({
-			chec <- grepl(paste0('[^(',paste(DNA_ALPHABET[1:15],collapse=','),')]'),gsub('[[:space:]]','',input$seq),ignore.case=T)
-			if (!chec) {chectext <- 'DNA OK'} else {chectext <- 'wrong letter in your DNA'}
-		return(chectext)
-	})
-
 	# importing input seq to biostring
 	dataInput <- reactive({
 		dataseq <- NULL
@@ -92,9 +75,17 @@ server = (function(input, output) {
 			dataseq <- readDNAStringSet(inFile$datapath,'fasta')
 		return(dataseq)
 	})
+	## Checking number of entries
+	checkInLength <- reactive({
+		checlen <- NULL
+		if (length(dataInput())>200) {checlen <- 'Large number of entries in your Fasta file'}
+		if (length(dataInput())>1000) {checlen <- 'Very large number of entries in your Fasta file'}
+		return(checlen)
+	})
+	output$seqchecklen <- renderText(checkInLength())
 
 	# seeking G4Hunt sequences
-	dataProcessed <- reactive({
+	dataProcessed <- eventReactive(input$go,{
 		if (!is.null(dataInput()))
 		{
 			#suppressWarnings()
@@ -105,10 +96,8 @@ server = (function(input, output) {
 					res <- as.data.frame(hunted)
 					colnames(res)[8] <- 'threshold'
 					colnames(res)[9] <- 'window'
-					nono <- make.names(res[,1],unique=T)
-					keep <- grep('.',nono,fixed=T)
-					nono[-keep] <- paste0(nono[-keep],'.0')
-					res <- cbind(nono,res)
+					nam1 <- paste(res[,1],res[,2],sep='_')
+					res <- cbind(nam1,res)
 					colnames(res)[1] <- 'hitnames'
 				}
 				else
@@ -119,13 +108,9 @@ server = (function(input, output) {
 		return(res)
 	})
 
-
-	output$seqcheck <- renderText(checkInput())
-	output$seqchecklen <- renderText(checkInLength())
-
 	output$result <- renderTable(dataProcessed(),rownames=F)
-	output$Inputlength <- renderText(length(dataInput()[[1]]))
-	output$hits <- renderText(length(dataProcessed()[,1]))
+	output$Inputlength <- renderText({paste0('Number of Fatsa entries: ',length(dataInput()))})
+	output$hits <- renderText({paste0('Number of Hits: ',length(dataProcessed()[,1]))})
 
 	output$downloadData <- downloadHandler(
 		filename = function() {paste0(strsplit(basename(as.character(input$file1)),split='.',fixed=T)[[1]][1],'_thr=',input$hl,'_k=',input$k,'_G4Hseeked_',Sys.Date(),'.txt')},

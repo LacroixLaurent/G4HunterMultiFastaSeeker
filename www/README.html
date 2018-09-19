@@ -90,6 +90,9 @@ img {
 .tabbed-pane {
   padding-top: 12px;
 }
+.html-widget {
+  margin-bottom: 20px;
+}
 button.code-folding-btn:focus {
   outline: none;
 }
@@ -125,7 +128,7 @@ $(document).ready(function () {
 <h1>G4Hunter multifasta seeker</h1>
 <div id="shiny-app-related-to-g4hunter-published-in-bedrat-et-al.-nar-2016paper-ref." class="section level4">
 <h4>Shiny App related to G4Hunter published in <a href="http://doi.org/10.1093/nar/gkw006">Bedrat <em>et al.</em> NAR 2016</a>.</h4>
-<p>Supplementary Data can be downloaded from <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4770238/bin/supp_44_4_1746__index.html">here</a>.</p>
+<p>Supplementary Data can be downloaded from <a href="http://www.ncbi.nlm.nih.gov/pmc/articles/PMC4770238/bin/supp_44_4_1746__index.html">NCBI</a> or <a href="https://github.com/LacroixLaurent/G4HunterPaperGit">Github</a>.</p>
 <blockquote>
 <h5 id="the-top-part-of-this-page-allows-you-to-compute-the-g4hunter-score-of-a-single-sequence.-this-main-app-g4hunter-seeker-identifies-dna-or-rna-regions-in-a-longer-sequence-for-which-the-g4hunter-score-is-above-the-chosen-threshold-in-windows-of-the-selected-size.-please-cite-bedrat-a-lacroix-l-mergny-jl-2016-re-evaluation-of-g-quadruplex-propensity-with-g4hunter.-nucleic-acids-res-4441746-1759.-when-reporting-results-obtained-with-this-app.">The top part of this page allows you to compute the G4Hunter score of a single sequence. This main App (G4Hunter Seeker) identifies DNA or RNA regions in a longer sequence for which the G4Hunter score is above the chosen threshold in windows of the selected size. Please cite <em>“Bedrat A, Lacroix L, &amp; Mergny JL (2016) Re-evaluation of G-quadruplex propensity with G4Hunter. Nucleic Acids Res 44(4):1746-1759.”</em>, when reporting results obtained with this App.</h5>
 </blockquote>
@@ -148,15 +151,15 @@ Characters orther than <strong>G</strong> or <strong>C</strong> are kept and cou
 <div id="g4hunter-multifasta-seeker-1" class="section level3">
 <h3>G4Hunter multifasta seeker</h3>
 <p>Choose your multifasta file (<strong>Fasta File entry</strong>).</p>
-<p>Please notice that if the number of entries of your multifasta file is big (more than 100), the app will become <strong>very slow</strong>.</p>
+<p>The file to download has to be a <strong>DNA fasta</strong> file that does not exceed the size limit imposed by <strong>Shiny</strong> (default is 5Mb, see below how to change it).<br />
+Invalide DNA letters are skipped and give rise to a warning.<br />
+Please note that if the number of entries in your multifasta file is big (more than 1000), the app will become <strong>very slow</strong>. You might need to use <strong>R</strong> outiside of the <strong>Shiny</strong> interface. To avoid unwanted long computation time, you need to click on the button <strong>Please click here to start the computation</strong> to start the G4Hunter process after uploading your file and checking the number of fasta entries.</p>
 <p>The <strong>Threshold</strong> and <strong>Window size</strong> determine the parameters for the sequence search as described in the <a href="http://doi.org/10.1093/nar/gkw006">publication</a>.<br />
 The higher the threshold, the more stringent the search: fewer G4 motifs wil be found, but these will be the most stable/likely ones.</p>
-<p>The file to download has to be a <strong>DNA fasta</strong> file that does not exceed the size limit imposed by Shiny (default is 5Mb, see below how to change it).</p>
 <p>The <strong>Report sequences</strong> option adds the nucleotide sequences in the output.<br />
 The <strong>Report G_sequences</strong> option changes sequences with a negative score (C-rich sequences) into their reverse complement. Thus the output reports only G-rich sequences.</p>
-<p>The <strong>hits</strong> report the number of sequences retrieved that match the settings.<br />
-The <strong>Number of the Input Sequence</strong> corresponds to the number of entry in the multifasta file.</p>
-<p>The output table contains the sequence name (<strong>seqnames</strong>), the <strong>start</strong>, <strong>end</strong> and <strong>width</strong> of the <em>refined</em> sequences that meet the search criteria.<br />
+<p>The <strong>hits</strong> report the number of sequences retrieved that match the settings.</p>
+<p>The output table contains a unique name for each hit (<strong>hitnames</strong>), the sequence name (<strong>seqnames</strong>) corresponding to the name of the fasta entry where this hit has been found, the <strong>start</strong>, <strong>end</strong> and <strong>width</strong> of the <em>refined</em> sequences that meet the search criteria.<br />
 The <strong>strand</strong> is <strong>+</strong> if the proposed G4 forming sequence is in the Input Sequence and this is set to <strong>-</strong> if the G4 forming sequence in on the reverse complementary strand.<br />
 The <strong>score</strong> is the G4Hunter score of the <em>refined</em> sequence and <strong>max_score</strong> is the highest score in absolute value in a window of the chosen <strong>window size</strong> for the sequence.<br />
 <strong>Threshold</strong> and <strong>window</strong> are respectively the <strong>Threshold</strong> and <strong>Window size</strong> used for the search.<br />
@@ -167,7 +170,7 @@ The <strong>sequence</strong> corresponds to the <em>refined</em> sequence in th
 </blockquote>
 <p>The output can be exported to a text file that can be directly opened with <em>Microsoft Excel</em>.</p>
 <hr />
-<p>As this is a simple Shiny app, there is a limit to the size you can upload (5Mb).<br />
+<p>As this is a simple <strong>Shiny</strong> app, there is a limit to the size you can upload (5Mb).<br />
 If necessary (but might not be good for the host), the size limit can be increased to XX Mb by adding the following code at the top of the server.R file (<em>adapted <a href="http://stackoverflow.com/questions/18037737/how-to-change-maximum-upload-size-exceeded-restriction-in-shiny-and-save-user">from stackoverflow</a></em>).</p>
 <pre class="{r}"><code>options(shiny.maxRequestSize=XX*1024^2)</code></pre>
 <hr />
