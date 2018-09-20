@@ -6,7 +6,7 @@ source('./seekG4hunt.r')
 
 ui <- fluidPage(
 
-	headerPanel("G4Hunter MultiFasta",windowTitle='Apps for G4Hunter'),
+	headerPanel("G4Hunter MultiFasta Seeker",windowTitle='Apps for G4Hunter'),
 	p('by L. Lacroix, laurent.lacroix@inserm.fr'),
 	helpText(a("Click Here to open the README",href="README.html",target="_blank")),
 
