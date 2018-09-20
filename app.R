@@ -60,7 +60,7 @@ server = (function(input, output) {
 
 	showModal(modalDialog(
 		title = "G4Hunter notes",
-		"The top part of this page allows you to compute the G4Hunter score of a single sequence. The main App (G4Hunter MultiFasta Seeker) identifies DNA or RNA regions in multiple sequences for which the G4Hunter score is above the threshold in windows of the selected size. Please cite Bedrat A, Lacroix L & Mergny JL (2016) Re-evaluation of G-quadruplex propensity with G4Hunter. Nucleic Acids Res 44(4):1746-1759, when reporting results obtained with this App.",
+		"The top part of this page allows you to compute the G4Hunter score of a single sequence. The main App (G4Hunter MultiFasta Seeker) identifies DNA regions in multiple sequences for which the G4Hunter score is above the threshold in windows of the selected size. Please cite Bedrat A, Lacroix L & Mergny JL (2016) Re-evaluation of G-quadruplex propensity with G4Hunter. Nucleic Acids Res 44(4):1746-1759, when reporting results obtained with this App.",
 		easyClose = TRUE
 	))
 
